@@ -10,7 +10,7 @@ namespace Moyo.Oms.Domain.Entities;
 
 public class ExternalSystem : Entity
 {
-    private ExternalSystem() {}
+    private ExternalSystem() { }
 
     public ExternalSystem(string systemName, IntegrationType integrationType)
     {

@@ -9,7 +9,7 @@ namespace Moyo.Oms.Domain.Entities;
 
 public class VendorUser : Entity
 {
-    private VendorUser() {}
+    private VendorUser() { }
 
     public VendorUser(VendorUserRegistration registration)
     {

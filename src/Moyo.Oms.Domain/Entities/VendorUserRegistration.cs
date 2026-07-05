@@ -12,5 +12,5 @@ public sealed record VendorUserRegistration
     public required string AzureAdUserId { get; init; }
     public required string FullName { get; init; }
     public required string EmailAddress { get; init; }
-    public required VendorRole Role { get ; init; }
+    public required VendorRole Role { get; init; }
 }

@@ -9,7 +9,7 @@ namespace Moyo.Oms.Domain.Entities;
 
 public class OutgoingStatusEvent : Entity
 {
-    private OutgoingStatusEvent() {}
+    private OutgoingStatusEvent() { }
 
     public OutgoingStatusEvent(OutgoingStatusEventDetails details)
     {

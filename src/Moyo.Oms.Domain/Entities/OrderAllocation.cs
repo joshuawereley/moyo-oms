@@ -9,7 +9,7 @@ namespace Moyo.Oms.Domain.Entities;
 
 public class OrderAllocation : Entity
 {
-    private OrderAllocation() {}
+    private OrderAllocation() { }
 
     public OrderAllocation(OrderAllocationDecision decision)
     {

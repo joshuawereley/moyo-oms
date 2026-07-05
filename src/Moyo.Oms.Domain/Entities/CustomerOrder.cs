@@ -12,7 +12,7 @@ public class CustomerOrder : Entity
 
     private readonly List<OrderLineItem> _lineItems = new();
 
-    public CustomerOrder() {}
+    public CustomerOrder() { }
 
     public CustomerOrder(CustomerOrderDetails details)
     {

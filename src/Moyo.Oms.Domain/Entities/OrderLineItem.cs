@@ -8,7 +8,7 @@ namespace Moyo.Oms.Domain.Entities;
 
 public class OrderLineItem : Entity
 {
-    private OrderLineItem() {}
+    private OrderLineItem() { }
 
     internal OrderLineItem(OrderLineItemDetails details)
     {
