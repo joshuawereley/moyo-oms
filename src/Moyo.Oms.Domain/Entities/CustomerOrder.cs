@@ -9,6 +9,9 @@ namespace Moyo.Oms.Domain.Entities;
 
 public class CustomerOrder : Entity
 {
+
+    private readonly List<OrderLineItem> _lineItems = new();
+
     public CustomerOrder() {}
 
     public CustomerOrder(CustomerOrderDetails details)
@@ -58,4 +61,18 @@ public class CustomerOrder : Entity
 
     public void UpdateFulfilment(FulfilmentStatus fulfilmentStatus) =>
         FulfilmentStatus = fulfilmentStatus;
+
+    public IReadOnlyCollection<OrderLineItem> LineItems =>
+        _lineItems.AsReadOnly();
+
+    public void AddLineItem(OrderLineItemDetails details)
+    {
+        ArgumentNullException.ThrowIfNull(details);
+
+        _lineItems.Add(new OrderLineItem(details));
+        RecalculateTotal();
+    }
+
+    private void RecalculateTotal() =>
+        OrderTotal = _lineItems.Sum(item => item.LineTotal);
 }
