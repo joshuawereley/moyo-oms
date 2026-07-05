@@ -1,4 +1,4 @@
-namespace Moyo.Oms.Domains.Enums;
+namespace Moyo.Oms.Domain.Enums;
 
 /// <summary>
 /// Whether a vendor is currently offering a product for sale.
