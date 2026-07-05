@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moyo.Oms.Domain\Moyo.Oms.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

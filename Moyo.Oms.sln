@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F7255199-657
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moyo.Oms.Domain", "src\Moyo.Oms.Domain\Moyo.Oms.Domain.csproj", "{EEE60534-DF27-47BF-B368-4BF9C977523E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moyo.Oms.Application", "src\Moyo.Oms.Application\Moyo.Oms.Application.csproj", "{AF4915F9-8124-43D4-8B3A-CC6961DC0FCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +22,13 @@ Global
 		{EEE60534-DF27-47BF-B368-4BF9C977523E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEE60534-DF27-47BF-B368-4BF9C977523E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEE60534-DF27-47BF-B368-4BF9C977523E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF4915F9-8124-43D4-8B3A-CC6961DC0FCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF4915F9-8124-43D4-8B3A-CC6961DC0FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF4915F9-8124-43D4-8B3A-CC6961DC0FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF4915F9-8124-43D4-8B3A-CC6961DC0FCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EEE60534-DF27-47BF-B368-4BF9C977523E} = {F7255199-6579-449E-91BD-D54C148C402D}
+		{AF4915F9-8124-43D4-8B3A-CC6961DC0FCB} = {F7255199-6579-449E-91BD-D54C148C402D}
 	EndGlobalSection
 EndGlobal
