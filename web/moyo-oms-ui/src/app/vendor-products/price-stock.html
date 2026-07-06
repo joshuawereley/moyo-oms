@@ -1,0 +1,21 @@
+<section class="price-stock">
+  <h2>Update Price</h2>
+
+  <form (ngSubmit)="reprice()">
+    <label>
+      Vendor Product Id
+      <input type="number" name="vendorProductId" [(ngModel)]="vendorProductId" required />
+    </label>
+
+    <label>
+      New Price
+      <input type="number" name="newPrice" [(ngModel)]="newPrice" step="0.01" min="0" required />
+    </label>
+
+    <button type="submit">Reprice</button>
+  </form>
+
+  @if (status()) {
+    <p class="status">{{ status() }}</p>
+  }
+</section>
