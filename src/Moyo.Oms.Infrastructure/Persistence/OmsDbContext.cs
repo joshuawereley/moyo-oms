@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
+using Moyo.Oms.Application.Abstractions.Persistence;
 using Moyo.Oms.Domain.Entities;
 
 namespace Moyo.Oms.Infrastructure.Persistence;
@@ -8,7 +9,7 @@ namespace Moyo.Oms.Infrastructure.Persistence;
 /// The EF Core database session for the OMS.
 /// </summary>
 
-public sealed class OmsDbContext : DbContext
+public sealed class OmsDbContext : DbContext, IUnitOfWork
 {
     public OmsDbContext(DbContextOptions<OmsDbContext> options)
         : base(options) { }
