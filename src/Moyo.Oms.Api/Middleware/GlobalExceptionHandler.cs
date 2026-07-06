@@ -57,6 +57,12 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             Title = "Resource not found.",
             Detail = exception.Message,
         },
+        ForbiddenAccessException => new ProblemDetails
+        {
+            Status = StatusCodes.Status403Forbidden,
+            Title = "Forbidden.",
+            Detail = exception.Message,
+        },
         _ => new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
