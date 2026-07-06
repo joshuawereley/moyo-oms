@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
+
 using Moyo.Oms.Api.Middleware;
 using Moyo.Oms.Application;
 using Moyo.Oms.Infrastructure;
@@ -7,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 string connectionString =
     builder.Configuration.GetConnectionString("OmsDatabase")
     ?? throw new InvalidOperationException("Connection string 'OmsDatabase' is not configured.");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("EntraId"));
 
 builder.Services.AddControllers();
 builder.Services.AddApplication();
@@ -27,6 +33,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
