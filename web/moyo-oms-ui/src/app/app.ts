@@ -20,7 +20,13 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.authService.initialize().subscribe(() => {
-      this.authService.handleRedirectObservable().subscribe(() => this.updateLoginState());
+      this.authService.handleRedirectObservable().subscribe((result) => {
+        if (result?.account) {
+          this.authService.instance.setActiveAccount(result.account);
+        }
+        this.ensureActiveAccount();
+        this.updateLoginState();
+      });
     });
 
     this.broadcastService.inProgress$
@@ -28,7 +34,10 @@ export class App implements OnInit {
         filter((status) => status === InteractionStatus.None),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => this.updateLoginState());
+      .subscribe(() => {
+        this.ensureActiveAccount();
+        this.updateLoginState();
+      });
   }
 
   protected login(): void {
@@ -37,6 +46,14 @@ export class App implements OnInit {
 
   protected logout(): void {
     this.authService.logoutRedirect();
+  }
+
+  private ensureActiveAccount(): void {
+    const active = this.authService.instance.getActiveAccount();
+    const accounts = this.authService.instance.getAllAccounts();
+    if (!active && accounts.length > 0) {
+      this.authService.instance.setActiveAccount(accounts[0]);
+    }
   }
 
   private updateLoginState(): void {
