@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
 using Moyo.Oms.Api.Authorization;
+using Moyo.Oms.Api.Configuration;
 using Moyo.Oms.Api.Middleware;
 using Moyo.Oms.Application;
 using Moyo.Oms.Infrastructure;
@@ -29,14 +30,19 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOmsSwagger(builder.Configuration);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.OAuthClientId(app.Configuration["EntraId:ClientId"]!);
+        options.OAuthUsePkce();
+        options.OAuthScopeSeparator(" ");
+    });
 }
 
 app.UseExceptionHandler();
