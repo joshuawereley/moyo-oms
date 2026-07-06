@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Moyo.Oms.Api.Contracts;
@@ -6,6 +7,7 @@ using Moyo.Oms.Application.VendorProducts;
 namespace Moyo.Oms.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/vendor-products")]
 public sealed class VendorProductsController : ControllerBase
 {
