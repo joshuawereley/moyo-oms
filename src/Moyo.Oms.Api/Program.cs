@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 
+using Moyo.Oms.Api.Authorization;
 using Moyo.Oms.Api.Middleware;
 using Moyo.Oms.Application;
 using Moyo.Oms.Infrastructure;
@@ -13,6 +14,12 @@ string connectionString =
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("EntraId"));
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(AuthorizationPolicies.VendorAdministrator, policy =>
+        policy.RequireClaim(
+            AuthorizationPolicies.RoleClaimType,
+            AuthorizationPolicies.VendorAdministrator));
 
 builder.Services.AddControllers();
 builder.Services.AddApplication();

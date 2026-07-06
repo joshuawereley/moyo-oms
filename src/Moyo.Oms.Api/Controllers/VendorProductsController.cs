@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Moyo.Oms.Api.Authorization;
 using Moyo.Oms.Api.Contracts;
 using Moyo.Oms.Application.VendorProducts;
 
@@ -19,6 +20,7 @@ public sealed class VendorProductsController : ControllerBase
     }
 
     [HttpPut("{vendorProductId:int}/price")]
+    [Authorize(Policy = AuthorizationPolicies.VendorAdministrator)]
     public async Task<IActionResult> Reprice(
         int vendorProductId,
         RepriceVendorProductBody body,
