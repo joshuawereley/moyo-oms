@@ -2,6 +2,8 @@ using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Moyo.Oms.Application.Abstractions.Identity;
+using Moyo.Oms.Application.Identity;
 using Moyo.Oms.Application.VendorProducts;
 
 namespace Moyo.Oms.Application;
@@ -17,6 +19,7 @@ public static class DependencyInjection
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        services.AddScoped<ICurrentVendorUserProvider, CurrentVendorUserProvider>();
         services.AddScoped<IInventoryService, InventoryService>();
 
         return services;
