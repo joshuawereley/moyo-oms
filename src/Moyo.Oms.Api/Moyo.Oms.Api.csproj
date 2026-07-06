@@ -1,5 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup>  <UserSecretsId>55e1f695-6579-4863-93d5-bca161b89d44</UserSecretsId>
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <UserSecretsId>55e1f695-6579-4863-93d5-bca161b89d44</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Moyo.Oms.Application\Moyo.Oms.Application.csproj" />
