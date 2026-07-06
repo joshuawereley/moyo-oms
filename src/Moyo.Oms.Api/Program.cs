@@ -3,8 +3,10 @@ using Microsoft.Identity.Web;
 
 using Moyo.Oms.Api.Authorization;
 using Moyo.Oms.Api.Configuration;
+using Moyo.Oms.Api.Identity;
 using Moyo.Oms.Api.Middleware;
 using Moyo.Oms.Application;
+using Moyo.Oms.Application.Abstractions.Identity;
 using Moyo.Oms.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,9 @@ builder.Services.AddAuthorizationBuilder()
 builder.Services.AddControllers();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(connectionString);
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
