@@ -6,8 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Package versions are declared here as projects require them.
-         Projects reference packages without a Version attribute. -->
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
 </Project>
