@@ -8,5 +8,4 @@ public sealed record RepriceVendorProductRequest
 {
     public required int VendorProductId { get; init; }
     public required decimal NewPrice { get; init; }
-    public required int ChangedByVendorUserId { get; init; }
 }

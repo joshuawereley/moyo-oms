@@ -7,5 +7,4 @@ namespace Moyo.Oms.Api.Contracts;
 public sealed record RepriceVendorProductBody
 {
     public required decimal NewPrice { get; init; }
-    public required int ChangedByVendorUserId { get; init; }
 }

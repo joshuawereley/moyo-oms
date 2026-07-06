@@ -13,6 +13,5 @@ public sealed class RepriceVendorProductRequestValidator
     {
         RuleFor(request => request.VendorProductId).GreaterThan(0);
         RuleFor(request => request.NewPrice).GreaterThanOrEqualTo(0m);
-        RuleFor(request => request.ChangedByVendorUserId).GreaterThan(0);
     }
 }

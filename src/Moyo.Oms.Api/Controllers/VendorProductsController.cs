@@ -30,7 +30,6 @@ public sealed class VendorProductsController : ControllerBase
         {
             VendorProductId = vendorProductId,
             NewPrice = body.NewPrice,
-            ChangedByVendorUserId = body.ChangedByVendorUserId,
         };
 
         await _inventoryService.RepriceAsync(request, cancellationToken);
