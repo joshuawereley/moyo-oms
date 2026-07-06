@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 using Moyo.Oms.Domain.Entities;
 
 namespace Moyo.Oms.Infrastructure.Persistence.Configurations;
