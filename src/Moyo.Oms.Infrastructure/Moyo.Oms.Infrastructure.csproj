@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moyo.Oms.Application\Moyo.Oms.Application.csproj" />
+  </ItemGroup>
+
+</Project>
