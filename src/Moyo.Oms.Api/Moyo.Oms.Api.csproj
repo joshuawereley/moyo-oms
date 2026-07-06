@@ -1,4 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup>  <UserSecretsId>55e1f695-6579-4863-93d5-bca161b89d44</UserSecretsId>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Moyo.Oms.Application\Moyo.Oms.Application.csproj" />
