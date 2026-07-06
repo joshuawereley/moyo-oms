@@ -11,6 +11,8 @@ using Moyo.Oms.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string vendorPortalCorsPolicy = "AllowVendorPortal";
+
 string connectionString =
     builder.Configuration.GetConnectionString("OmsDatabase")
     ?? throw new InvalidOperationException("Connection string 'OmsDatabase' is not configured.");
@@ -21,6 +23,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(AuthorizationPolicies.VendorAdministrator, policy =>
         policy.RequireRole(AuthorizationPolicies.VendorAdministrator));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(vendorPortalCorsPolicy, policy =>
+        policy
+            .WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [])
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 builder.Services.AddControllers();
 builder.Services.AddApplication();
@@ -49,6 +60,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
+
+app.UseCors(vendorPortalCorsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,0 +1,15 @@
+<header class="app-header">
+  <h1>MOYO Vendor Portal</h1>
+  @if (isLoggedIn()) {
+    <nav>
+      <a routerLink="/price-stock">Price &amp; Stock</a>
+    </nav>
+    <button type="button" (click)="logout()">Sign out</button>
+  } @else {
+    <button type="button" (click)="login()">Sign in</button>
+  }
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
