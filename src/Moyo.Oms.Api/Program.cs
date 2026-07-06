@@ -18,9 +18,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(AuthorizationPolicies.VendorAdministrator, policy =>
-        policy.RequireClaim(
-            AuthorizationPolicies.RoleClaimType,
-            AuthorizationPolicies.VendorAdministrator));
+        policy.RequireRole(AuthorizationPolicies.VendorAdministrator));
 
 builder.Services.AddControllers();
 builder.Services.AddApplication();
