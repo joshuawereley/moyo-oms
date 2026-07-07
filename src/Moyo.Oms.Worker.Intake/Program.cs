@@ -19,5 +19,7 @@ builder.Services.AddOptions<ServiceBusOptions>()
     .Validate(options => options.ExternalSystemId > 0, "ServiceBus ExternalSystemId must be positive.")
     .ValidateOnStart();
 
+builder.Services.AddHostedService<OrderIntakeProcessor>();
+
 var host = builder.Build();
 host.Run();
