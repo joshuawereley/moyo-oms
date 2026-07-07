@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrentVendorUserProvider, CurrentVendorUserProvider>();
         services.AddScoped<IInventoryService, InventoryService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<IOrderStatusService, OrderStatusService>();
 
         return services;
     }
