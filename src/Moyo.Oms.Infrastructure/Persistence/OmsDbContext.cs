@@ -32,4 +32,24 @@ public sealed class OmsDbContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmsDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
+
+    public async Task ExecuteInTransactionAsync(
+        Func<CancellationToken, Task> operation,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        var strategy = Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(
+            async ct =>
+            {
+                await using var transaction = await Database.BeginTransactionAsync(ct);
+
+                await operation(ct);
+
+                await transaction.CommitAsync(ct);
+            },
+            cancellationToken);
+    }
 }

@@ -63,6 +63,12 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             Title = "Forbidden.",
             Detail = exception.Message,
         },
+        ConflictException => new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Request conflicts with the current resource state.",
+            Detail = exception.Message,
+        },
         _ => new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,

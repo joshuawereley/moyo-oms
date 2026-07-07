@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 using Moyo.Oms.Application.Abstractions.Persistence;
 using Moyo.Oms.Domain.Entities;
 
@@ -14,6 +16,15 @@ public sealed class OrderRepository : IOrderRepository
     public OrderRepository(OmsDbContext context)
     {
         _context = context;
+    }
+
+    public async Task<CustomerOrder?> GetByIdAsync(
+        int orderId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.CustomerOrders
+            .Include(order => order.IncomingOrderEvent)
+            .FirstOrDefaultAsync(order => order.Id == orderId, cancellationToken);
     }
 
     public void Add(CustomerOrder order)

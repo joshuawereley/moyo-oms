@@ -8,5 +8,6 @@ namespace Moyo.Oms.Application.Abstractions.Persistence;
 
 public interface IOrderRepository
 {
+    Task<CustomerOrder?> GetByIdAsync(int orderId, CancellationToken cancellationToken = default);
     void Add(CustomerOrder order);
 }
