@@ -1,0 +1,37 @@
+{
+  "UserConfig": {
+    "Namespaces": [
+      {
+        "Name": "sbemulatorns",
+        "Queues": [],
+        "Topics": [
+          {
+            "Name": "orders.new",
+            "Properties": {
+              "DefaultMessageTimeToLive": "PT1H",
+              "RequiresDuplicateDetection": false,
+              "DuplicateDetectionHistoryTimeWindow": "PT10M",
+              "EnableBatchedOperations": true
+            },
+            "Subscriptions": [
+              {
+                "Name": "oms-intake",
+                "Properties": {
+                  "DeadLetteringOnMessageExpiration": false,
+                  "DefaultMessageTimeToLive": "PT1H",
+                  "LockDuration": "PT1M",
+                  "MaxDeliveryCount": 5,
+                  "RequiresSession": false
+                },
+                "Rules": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Logging": {
+      "Type": "File"
+    }
+  }
+}
