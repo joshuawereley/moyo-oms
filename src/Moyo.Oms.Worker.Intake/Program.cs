@@ -1,3 +1,4 @@
+using Moyo.Oms.Application.Abstractions.Identity;
 using Moyo.Oms.Application;
 using Moyo.Oms.Infrastructure;
 using Moyo.Oms.Worker.Intake;
@@ -10,6 +11,7 @@ string connectionString =
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(connectionString);
+builder.Services.AddSingleton<ICurrentUser, NoCurrentUser>();
 
 builder.Services.AddOptions<ServiceBusOptions>()
     .Bind(builder.Configuration.GetSection(ServiceBusOptions.SectionName))
