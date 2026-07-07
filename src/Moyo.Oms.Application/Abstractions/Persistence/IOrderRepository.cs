@@ -1,0 +1,12 @@
+using Moyo.Oms.Domain.Entities;
+
+namespace Moyo.Oms.Application.Abstractions.Persistence;
+
+/// <summary>
+/// Loads and stores customer order aggregates.
+/// </summary>
+
+public interface IOrderRepository
+{
+    void Add(CustomerOrder order);
+}
