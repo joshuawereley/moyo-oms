@@ -9,6 +9,7 @@ public sealed record CreateOrderRequest
     public required int ExternalSystemId { get; init; }
     public required string ServiceBusMessageId { get; init; }
     public required string ClientPortalOrderId { get; init; }
+    public required string ClientReference { get; init; }
     public required IReadOnlyList<CreateOrderLine> Lines { get; init; }
 }
 
