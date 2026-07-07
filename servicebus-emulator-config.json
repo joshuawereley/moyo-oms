@@ -10,7 +10,7 @@
             "Properties": {
               "DefaultMessageTimeToLive": "PT1H",
               "RequiresDuplicateDetection": false,
-              "DuplicateDetectionHistoryTimeWindow": "PT10M",
+              "DuplicateDetectionHistoryTimeWindow": "PT5M",
               "EnableBatchedOperations": true
             },
             "Subscriptions": [
