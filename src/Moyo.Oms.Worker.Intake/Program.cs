@@ -1,5 +1,5 @@
-using Moyo.Oms.Application.Abstractions.Identity;
 using Moyo.Oms.Application;
+using Moyo.Oms.Application.Abstractions.Identity;
 using Moyo.Oms.Infrastructure;
 using Moyo.Oms.Worker.Intake;
 
