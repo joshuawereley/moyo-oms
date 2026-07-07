@@ -6,7 +6,6 @@ namespace Moyo.Oms.Domain.Entities;
 
 public sealed record CustomerOrderDetails
 {
-    public required int IncomingEventId { get; init; }
     public required string ClientPortalOrderId { get; init; }
     public required string ClientReference { get; init; }
 }

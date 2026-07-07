@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Moyo.Oms.Application.Abstractions.Identity;
 using Moyo.Oms.Application.Identity;
+using Moyo.Oms.Application.Orders;
 using Moyo.Oms.Application.VendorProducts;
 
 namespace Moyo.Oms.Application;
@@ -21,6 +22,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         services.AddScoped<ICurrentVendorUserProvider, CurrentVendorUserProvider>();
         services.AddScoped<IInventoryService, InventoryService>();
+        services.AddScoped<IOrderService, OrderService>();
 
         return services;
     }

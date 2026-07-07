@@ -14,14 +14,14 @@ public class CustomerOrder : Entity
 
     public CustomerOrder() { }
 
-    public CustomerOrder(CustomerOrderDetails details)
+    public CustomerOrder(IncomingOrderEvent incomingOrderEvent, CustomerOrderDetails details)
     {
+        ArgumentNullException.ThrowIfNull(incomingOrderEvent);
         ArgumentNullException.ThrowIfNull(details);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(details.IncomingEventId);
         ArgumentException.ThrowIfNullOrWhiteSpace(details.ClientPortalOrderId);
         ArgumentException.ThrowIfNullOrWhiteSpace(details.ClientReference);
 
-        IncomingEventId = details.IncomingEventId;
+        IncomingOrderEvent = incomingOrderEvent;
         ClientPortalOrderId = details.ClientPortalOrderId;
         ClientReference = details.ClientReference;
         Status = OrderStatus.Received;

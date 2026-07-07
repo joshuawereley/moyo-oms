@@ -30,6 +30,11 @@ public static class DependencyInjection
         services.AddScoped<IVendorProductChangeHistoryRepository, VendorProductChangeHistoryRepository>();
 
         services.AddScoped<IVendorUserRepository, VendorUserRepository>();
+
+        services.AddScoped<IIncomingOrderEventRepository, IncomingOrderEventRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IProductReferenceRepository, ProductReferenceRepository>();
+
         return services;
     }
 }

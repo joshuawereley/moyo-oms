@@ -12,5 +12,26 @@ services:
     volumes:
       - moyo-oms-sql-data:/var/opt/mssql
 
+  servicebus-emulator:
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:1.1.2
+    container_name: moyo-oms-servicebus
+    depends_on:
+      - servicebus-sql
+    ports:
+      - "5672:5672"
+    environment:
+      ACCEPT_EULA: "Y"
+      SQL_SERVER: servicebus-sql
+      MSSQL_SA_PASSWORD: "Local_Dev_Pass123"
+    volumes:
+      - ./servicebus-emulator-config.json:/ServiceBus_Emulator/ConfigFiles/Config.json
+
+  servicebus-sql:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: moyo-oms-servicebus-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Local_Dev_Pass123"
+
 volumes:
   moyo-oms-sql-data:
