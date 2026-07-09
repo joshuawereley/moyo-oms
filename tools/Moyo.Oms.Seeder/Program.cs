@@ -1,10 +1,10 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Moyo.Oms.Infrastructure;
 using Moyo.Oms.Infrastructure.Persistence;
+using Moyo.Oms.Seeder;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -14,11 +14,18 @@ string connectionString =
 
 builder.Services.AddInfrastructure(connectionString);
 
+SeedOptions options =
+    builder.Configuration.GetSection(SeedOptions.SectionName).Get<SeedOptions>() ?? new SeedOptions();
+
 using var host = builder.Build();
 
 await using AsyncServiceScope scope = host.Services.CreateAsyncScope();
 OmsDbContext context = scope.ServiceProvider.GetRequiredService<OmsDbContext>();
 
-await context.Database.MigrateAsync();
+Console.WriteLine("Resetting database...");
+await ReferenceDataSeeder.ResetAsync(context);
 
-Console.WriteLine("Database is up to date. Seeding logic is added in the next change.");
+Console.WriteLine($"Seeding {options.Vendors} vendors and {options.Products} products...");
+await ReferenceDataSeeder.SeedAsync(context, options);
+
+Console.WriteLine("Reference data seeded.");
