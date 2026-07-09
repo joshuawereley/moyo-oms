@@ -8,4 +8,7 @@ public interface IInventoryService
 {
     Task RepriceAsync(RepriceVendorProductRequest request,
             CancellationToken cancellationToken = default);
+
+    Task AdjustStockAsync(AdjustVendorProductStockRequest request,
+            CancellationToken cancellationToken = default);
 }

@@ -30,4 +30,9 @@ public sealed class ProductReferenceRepository : IProductReferenceRepository
                     && product.PmsProductId == pmsProductId,
                 cancellationToken);
     }
+
+    public void Add(ProductReference productReference)
+    {
+        _context.ProductReferences.Add(productReference);
+    }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
 using Moyo.Oms.Api.Authorization;
@@ -7,7 +8,10 @@ using Moyo.Oms.Api.Identity;
 using Moyo.Oms.Api.Middleware;
 using Moyo.Oms.Application;
 using Moyo.Oms.Application.Abstractions.Identity;
+using Moyo.Oms.Application.Abstractions.Products;
+using Moyo.Oms.Application.Products;
 using Moyo.Oms.Infrastructure;
+using Moyo.Oms.Infrastructure.Products;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +40,17 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(connectionString);
+
+builder.Services.AddOptions<PmsOptions>()
+    .Bind(builder.Configuration.GetSection(PmsOptions.SectionName));
+
+builder.Services.AddHttpClient<IProductCatalogClient, HttpProductCatalogClient>((serviceProvider, client) =>
+{
+    PmsOptions options = serviceProvider.GetRequiredService<IOptions<PmsOptions>>().Value;
+    client.BaseAddress = new Uri(options.BaseUrl);
+});
+
+builder.Services.AddScoped<IProductSyncService, ProductSyncService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
