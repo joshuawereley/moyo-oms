@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <UserSecretsId>0b4205f8-17f3-4953-b464-b30cd7430493</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moyo.Oms.Application\Moyo.Oms.Application.csproj" />
+    <ProjectReference Include="..\Moyo.Oms.Infrastructure\Moyo.Oms.Infrastructure.csproj" />
+    <ProjectReference Include="..\Moyo.Oms.Contracts\Moyo.Oms.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

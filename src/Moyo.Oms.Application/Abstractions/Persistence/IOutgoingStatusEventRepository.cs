@@ -8,5 +8,7 @@ namespace Moyo.Oms.Application.Abstractions.Persistence;
 
 public interface IOutgoingStatusEventRepository
 {
+    Task<IReadOnlyList<OutgoingStatusEvent>> GetPendingAsync(int batchSize, CancellationToken cancellationToken = default);
+
     void Add(OutgoingStatusEvent statusEvent);
 }
