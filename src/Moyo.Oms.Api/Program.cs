@@ -9,6 +9,7 @@ using Moyo.Oms.Api.Middleware;
 using Moyo.Oms.Application;
 using Moyo.Oms.Application.Abstractions.Identity;
 using Moyo.Oms.Application.Abstractions.Products;
+using Moyo.Oms.Application.Products;
 using Moyo.Oms.Infrastructure;
 using Moyo.Oms.Infrastructure.Products;
 
@@ -48,6 +49,8 @@ builder.Services.AddHttpClient<IProductCatalogClient, HttpProductCatalogClient>(
     PmsOptions options = serviceProvider.GetRequiredService<IOptions<PmsOptions>>().Value;
     client.BaseAddress = new Uri(options.BaseUrl);
 });
+
+builder.Services.AddScoped<IProductSyncService, ProductSyncService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
