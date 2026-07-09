@@ -34,6 +34,15 @@ public sealed class VendorProductRepository : IVendorProductRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<VendorProduct>> GetByProductReferenceAsync(
+        int productReferenceId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.VendorProducts
+            .Where(vendorProduct => vendorProduct.ProductReferenceId == productReferenceId)
+            .ToListAsync(cancellationToken);
+    }
+
     public void Add(VendorProduct vendorProduct)
     {
         _context.VendorProducts.Add(vendorProduct);

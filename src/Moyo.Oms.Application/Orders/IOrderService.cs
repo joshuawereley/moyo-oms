@@ -6,6 +6,6 @@ namespace Moyo.Oms.Application.Orders;
 
 public interface IOrderService
 {
-    Task CreateOrderAsync(CreateOrderRequest request,
+    Task<int> CreateOrderAsync(CreateOrderRequest request,
             CancellationToken cancellationToken = default);
 }

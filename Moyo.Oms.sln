@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moyo.Oms.IntegrationTests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moyo.Oms.Worker.StatusPublisher", "src\Moyo.Oms.Worker.StatusPublisher\Moyo.Oms.Worker.StatusPublisher.csproj", "{F4CB7266-C7B8-4A86-A84C-B077BCD069D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moyo.Oms.AllocationFunction", "src\Moyo.Oms.AllocationFunction\Moyo.Oms.AllocationFunction.csproj", "{92B2DDC8-A15B-4440-B15C-F1B106169FC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{F4CB7266-C7B8-4A86-A84C-B077BCD069D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4CB7266-C7B8-4A86-A84C-B077BCD069D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4CB7266-C7B8-4A86-A84C-B077BCD069D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92B2DDC8-A15B-4440-B15C-F1B106169FC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B2DDC8-A15B-4440-B15C-F1B106169FC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92B2DDC8-A15B-4440-B15C-F1B106169FC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92B2DDC8-A15B-4440-B15C-F1B106169FC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EEE60534-DF27-47BF-B368-4BF9C977523E} = {F7255199-6579-449E-91BD-D54C148C402D}
@@ -88,5 +94,6 @@ Global
 		{502D6EDB-3EF7-4AF0-A960-17C8ABBBD2DE} = {97CF4E0C-2D3F-4FE0-B271-836E5FC54181}
 		{32B7293E-3F5F-4AFC-AEB8-19971A6FEFB0} = {97CF4E0C-2D3F-4FE0-B271-836E5FC54181}
 		{F4CB7266-C7B8-4A86-A84C-B077BCD069D0} = {F7255199-6579-449E-91BD-D54C148C402D}
+		{92B2DDC8-A15B-4440-B15C-F1B106169FC2} = {F7255199-6579-449E-91BD-D54C148C402D}
 	EndGlobalSection
 EndGlobal
