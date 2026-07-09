@@ -7,4 +7,6 @@ namespace Moyo.Oms.Application.Abstractions.Identity;
 public interface ICurrentVendorUserProvider
 {
     Task<int> GetVendorUserIdAsync(CancellationToken cancellationToken = default);
+
+    Task<int> GetVendorIdAsync(CancellationToken cancellationToken = default);
 }
