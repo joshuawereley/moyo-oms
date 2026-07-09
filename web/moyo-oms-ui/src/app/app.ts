@@ -1,13 +1,13 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionStatus } from '@azure/msal-browser';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterLink, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -17,6 +17,8 @@ export class App implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly isLoggedIn = signal(false);
+  protected readonly userName = signal('');
+  protected readonly navOpen = signal(false);
 
   ngOnInit(): void {
     this.authService.initialize().subscribe(() => {
@@ -48,6 +50,14 @@ export class App implements OnInit {
     this.authService.logoutRedirect();
   }
 
+  protected toggleNav(): void {
+    this.navOpen.update((open) => !open);
+  }
+
+  protected closeNav(): void {
+    this.navOpen.set(false);
+  }
+
   private ensureActiveAccount(): void {
     const active = this.authService.instance.getActiveAccount();
     const accounts = this.authService.instance.getAllAccounts();
@@ -57,6 +67,8 @@ export class App implements OnInit {
   }
 
   private updateLoginState(): void {
+    const account = this.authService.instance.getActiveAccount();
     this.isLoggedIn.set(this.authService.instance.getAllAccounts().length > 0);
+    this.userName.set(account?.name ?? account?.username ?? '');
   }
 }

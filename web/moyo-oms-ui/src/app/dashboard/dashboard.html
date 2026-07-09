@@ -1,0 +1,55 @@
+<div class="page-head">
+  <div>
+    <h2>Dashboard</h2>
+    <div class="sub">Your products and allocated orders at a glance.</div>
+  </div>
+</div>
+
+<div class="stack">
+  <div class="stat-grid">
+    <div class="card stat">
+      <div class="label">My products</div>
+      <div class="value num">{{ productCount() ?? '—' }}</div>
+    </div>
+    <div class="card stat">
+      <div class="label">My orders</div>
+      <div class="value num">{{ orderCount() ?? '—' }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Recent orders</h3>
+    </div>
+    @if (loading()) {
+      <div class="loading">Loading…</div>
+    } @else if (recentOrders().length === 0) {
+      <div class="empty">No allocated orders yet.</div>
+    } @else {
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Reference</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th>Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of recentOrders(); track order.id) {
+              <tr class="clickable" [routerLink]="['/orders', order.id]">
+                <td>{{ order.clientPortalOrderId }}</td>
+                <td class="muted">{{ order.clientReference }}</td>
+                <td><span [class]="badge(order.status)">{{ order.status }}</span></td>
+                <td class="num">R {{ order.orderTotal | number: '1.2-2' }}</td>
+                <td class="muted">{{ order.receivedAt | date: 'medium' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

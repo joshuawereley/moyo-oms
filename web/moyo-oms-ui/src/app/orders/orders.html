@@ -1,0 +1,52 @@
+<div class="page-head">
+  <div>
+    <h2>Orders</h2>
+    <div class="sub">Orders allocated to you.</div>
+  </div>
+</div>
+
+<div class="card">
+  @if (loading()) {
+    <div class="loading">Loading…</div>
+  } @else if (items().length === 0) {
+    <div class="empty">No allocated orders yet.</div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Reference</th>
+            <th>Status</th>
+            <th>Fulfilment</th>
+            <th>Total</th>
+            <th>Received</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of items(); track order.id) {
+            <tr class="clickable" [routerLink]="['/orders', order.id]">
+              <td>{{ order.clientPortalOrderId }}</td>
+              <td class="muted">{{ order.clientReference }}</td>
+              <td><span [class]="badge(order.status)">{{ order.status }}</span></td>
+              <td><span [class]="badge(order.fulfilmentStatus)">{{ order.fulfilmentStatus }}</span></td>
+              <td class="num">R {{ order.orderTotal | number: '1.2-2' }}</td>
+              <td class="muted">{{ order.receivedAt | date: 'medium' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pager">
+      <span class="info">Page {{ page() }} of {{ pageCount }} · {{ total() }} orders</span>
+      <span class="controls">
+        <button type="button" class="btn btn-ghost btn-sm" (click)="prev()" [disabled]="page() <= 1">
+          Previous
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="next()" [disabled]="page() >= pageCount">
+          Next
+        </button>
+      </span>
+    </div>
+  }
+</div>
