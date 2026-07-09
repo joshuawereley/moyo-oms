@@ -27,13 +27,14 @@ public sealed class OrderService : IOrderService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task CreateOrderAsync(CreateOrderRequest request, CancellationToken cancellationToken = default)
+    public async Task<int> CreateOrderAsync(CreateOrderRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
         if (await _events.ExistsAsync(request.ServiceBusMessageId, cancellationToken))
         {
-            return;
+            return await _orders.GetIdByServiceBusMessageIdAsync(request.ServiceBusMessageId, cancellationToken)
+                ?? throw new NotFoundException(nameof(CustomerOrder), request.ServiceBusMessageId);
         }
 
         IncomingOrderEvent incomingEvent = new(new IncomingOrderEventDetails
@@ -72,5 +73,7 @@ public sealed class OrderService : IOrderService
         _orders.Add(order);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return order.Id;
     }
 }

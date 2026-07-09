@@ -31,4 +31,14 @@ public sealed class OrderRepository : IOrderRepository
     {
         _context.CustomerOrders.Add(order);
     }
+
+    public async Task<int?> GetIdByServiceBusMessageIdAsync(
+        string serviceBusMessageId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.CustomerOrders
+            .Where(order => order.IncomingOrderEvent.ServiceBusMessageId == serviceBusMessageId)
+            .Select(order => (int?)order.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 }
