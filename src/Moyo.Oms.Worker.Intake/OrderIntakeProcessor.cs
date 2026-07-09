@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 
 using Azure.Messaging.ServiceBus;
@@ -11,7 +12,8 @@ using Moyo.Oms.Contracts;
 namespace Moyo.Oms.Worker.Intake;
 
 /// <summary>
-/// Subscribes to the orders.new topic and turns messages into customer orders.
+/// Subscribes to the orders.new topic, turns messages into customer orders,
+/// and publishes an OrderReceived event to trigger vendor allocation.
 /// </summary>
 
 public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
@@ -21,6 +23,7 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
     private readonly ILogger<OrderIntakeProcessor> _logger;
     private readonly ServiceBusClient _client;
     private readonly ServiceBusProcessor _processor;
+    private readonly ServiceBusSender _allocationSender;
 
     public OrderIntakeProcessor(
         IServiceScopeFactory scopeFactory,
@@ -40,6 +43,7 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
                 AutoCompleteMessages = false,
                 MaxConcurrentCalls = 1,
             });
+        _allocationSender = _client.CreateSender(_options.OrderReceivedTopicName);
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -88,7 +92,9 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
 
             await using AsyncServiceScope scope = _scopeFactory.CreateAsyncScope();
             IOrderService orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
-            await orderService.CreateOrderAsync(request, args.CancellationToken);
+            int orderId = await orderService.CreateOrderAsync(request, args.CancellationToken);
+
+            await PublishOrderReceivedAsync(orderId, args.CancellationToken);
 
             await args.CompleteMessageAsync(args.Message, args.CancellationToken);
         }
@@ -103,6 +109,19 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
         }
     }
 
+    private async Task PublishOrderReceivedAsync(int orderId, CancellationToken cancellationToken)
+    {
+        OrderReceived payload = new() { OrderId = orderId };
+
+        ServiceBusMessage message = new(JsonSerializer.Serialize(payload))
+        {
+            MessageId = orderId.ToString(CultureInfo.InvariantCulture),
+            ContentType = "application/json",
+        };
+
+        await _allocationSender.SendMessageAsync(message, cancellationToken);
+    }
+
     private Task HandleErrorAsync(ProcessErrorEventArgs args)
     {
         _logger.LogError(args.Exception, "Service Bus error from {ErrorSource}.", args.ErrorSource);
@@ -112,6 +131,7 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await _processor.DisposeAsync();
+        await _allocationSender.DisposeAsync();
         await _client.DisposeAsync();
     }
 }
