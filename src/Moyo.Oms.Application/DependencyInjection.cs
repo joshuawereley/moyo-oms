@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderStatusService, OrderStatusService>();
         services.AddScoped<IOrderStatusService, OrderStatusService>();
         services.AddScoped<IOutboxPublisher, OutboxPublisher>();
+        services.AddScoped<IAllocationService, AllocationService>();
 
         return services;
     }
