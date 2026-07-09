@@ -1,0 +1,106 @@
+<a routerLink="/orders" class="muted" style="display: inline-block; margin-bottom: 16px">← Back to orders</a>
+
+@if (loading()) {
+  <div class="card"><div class="loading">Loading…</div></div>
+} @else if (notFound()) {
+  <div class="card"><div class="empty">Order not found, or not allocated to you.</div></div>
+} @else if (order(); as detail) {
+  <div class="page-head">
+    <div>
+      <h2>Order {{ detail.clientPortalOrderId }}</h2>
+      <div class="sub">Reference {{ detail.clientReference }}</div>
+    </div>
+    <span [class]="badge(detail.status)">{{ detail.status }}</span>
+  </div>
+
+  <div class="stack">
+    <div class="card card-pad">
+      <div class="stat-grid">
+        <div>
+          <div class="label muted">Status</div>
+          <div><span [class]="badge(detail.status)">{{ detail.status }}</span></div>
+        </div>
+        <div>
+          <div class="label muted">Fulfilment</div>
+          <div><span [class]="badge(detail.fulfilmentStatus)">{{ detail.fulfilmentStatus }}</span></div>
+        </div>
+        <div>
+          <div class="label muted">Total</div>
+          <div class="num" style="font-weight: 600">R {{ detail.orderTotal | number: '1.2-2' }}</div>
+        </div>
+        <div>
+          <div class="label muted">Received</div>
+          <div class="muted">{{ detail.receivedAt | date: 'medium' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Line items</h3></div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Product</th><th>Qty</th><th>Unit price</th><th>Line total</th></tr>
+          </thead>
+          <tbody>
+            @for (line of detail.lines; track $index) {
+              <tr>
+                <td>{{ line.productName }}</td>
+                <td class="num">{{ line.quantity }}</td>
+                <td class="num">R {{ line.unitPrice | number: '1.2-2' }}</td>
+                <td class="num">R {{ line.lineTotal | number: '1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h3>Update status</h3>
+      <div class="row-gap" style="margin-top: 12px">
+        <div class="field">
+          <label>New status</label>
+          <select class="input" [(ngModel)]="targetStatus" style="min-width: 160px">
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ status }}</option>
+            }
+          </select>
+        </div>
+        <div class="field" style="flex: 1; min-width: 200px">
+          <label>Note (optional)</label>
+          <input class="input" [(ngModel)]="statusNote" placeholder="e.g. Picked up" />
+        </div>
+        <button type="button" class="btn btn-primary" (click)="changeStatus()" [disabled]="saving()">Apply</button>
+      </div>
+      @if (message()) {
+        <div class="status-line" [class.ok]="!failed()">{{ message() }}</div>
+      }
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Status history</h3></div>
+      @if (detail.history.length === 0) {
+        <div class="empty">No history.</div>
+      } @else {
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>From</th><th>To</th><th>Note</th><th>When</th></tr>
+            </thead>
+            <tbody>
+              @for (entry of detail.history; track $index) {
+                <tr>
+                  <td><span [class]="badge(entry.previousStatus)">{{ entry.previousStatus }}</span></td>
+                  <td><span [class]="badge(entry.newStatus)">{{ entry.newStatus }}</span></td>
+                  <td class="muted">{{ entry.statusNote || '—' }}</td>
+                  <td class="muted">{{ entry.changedAt | date: 'medium' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+}

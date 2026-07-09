@@ -1,0 +1,96 @@
+<div class="page-head">
+  <div>
+    <h2>Products</h2>
+    <div class="sub">Manage your pricing and inventory.</div>
+  </div>
+</div>
+
+<div class="card">
+  @if (loading()) {
+    <div class="loading">Loading…</div>
+  } @else if (items().length === 0) {
+    <div class="empty">No products found.</div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Availability</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of items(); track product.id) {
+            <tr>
+              <td>{{ product.productName }}</td>
+              <td class="muted">{{ product.productCategory }}</td>
+              <td class="num">R {{ product.sellingPrice | number: '1.2-2' }}</td>
+              <td class="num">{{ product.stockQuantity }}</td>
+              <td><span [class]="badge(product.availability)">{{ product.availability }}</span></td>
+              <td>
+                <button type="button" class="btn btn-ghost btn-sm" (click)="manage(product)">Manage</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pager">
+      <span class="info">Page {{ page() }} of {{ pageCount }} · {{ total() }} products</span>
+      <span class="controls">
+        <button type="button" class="btn btn-ghost btn-sm" (click)="prev()" [disabled]="page() <= 1">
+          Previous
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="next()" [disabled]="page() >= pageCount">
+          Next
+        </button>
+      </span>
+    </div>
+  }
+</div>
+
+@if (selected(); as item) {
+  <div class="modal-backdrop" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>{{ item.productName }}</h3>
+      <p class="muted">Current: R {{ item.sellingPrice | number: '1.2-2' }} · {{ item.stockQuantity }} in stock</p>
+
+      <div class="stack" style="margin-top: 16px">
+        <div class="field">
+          <label>New price (R)</label>
+          <div class="row-gap">
+            <input class="input" type="number" step="0.01" [(ngModel)]="priceInput" style="max-width: 160px" />
+            <button type="button" class="btn btn-primary btn-sm" (click)="reprice()" [disabled]="saving()">
+              Update price
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Adjust stock</label>
+          <div class="row-gap">
+            <input class="input" type="number" min="1" [(ngModel)]="stockInput" style="max-width: 120px" />
+            <button type="button" class="btn btn-ghost btn-sm" (click)="adjustStock('Increase')" [disabled]="saving()">
+              + Add
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" (click)="adjustStock('Decrease')" [disabled]="saving()">
+              − Remove
+            </button>
+          </div>
+        </div>
+
+        @if (message()) {
+          <div class="status-line" [class.ok]="!failed()">{{ message() }}</div>
+        }
+      </div>
+
+      <div class="row-gap" style="justify-content: flex-end; margin-top: 20px">
+        <button type="button" class="btn btn-ghost" (click)="close()">Close</button>
+      </div>
+    </div>
+  </div>
+}

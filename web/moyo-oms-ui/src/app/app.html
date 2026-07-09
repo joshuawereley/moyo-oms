@@ -1,15 +1,44 @@
-<header class="app-header">
-  <h1>MOYO Vendor Portal</h1>
-  @if (isLoggedIn()) {
-    <nav>
-      <a routerLink="/price-stock">Price &amp; Stock</a>
-    </nav>
-    <button type="button" (click)="logout()">Sign out</button>
-  } @else {
-    <button type="button" (click)="login()">Sign in</button>
-  }
-</header>
+@if (isLoggedIn()) {
+  <div class="shell">
+    <aside class="sidebar" [class.open]="navOpen()">
+      <div class="brand">
+        <span class="logo">M</span>
+        <span>MOYO</span>
+      </div>
+      <nav (click)="closeNav()">
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/products" routerLinkActive="active">Products</a>
+        <a routerLink="/orders" routerLinkActive="active">Orders</a>
+      </nav>
+    </aside>
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+    @if (navOpen()) {
+      <div class="scrim" (click)="closeNav()"></div>
+    }
+
+    <div class="main-col">
+      <header class="topbar">
+        <button type="button" class="hamburger" (click)="toggleNav()" aria-label="Menu">☰</button>
+        <div class="spacer"></div>
+        @if (userName()) {
+          <span class="user">{{ userName() }}</span>
+        }
+        <button type="button" class="btn btn-ghost btn-sm" (click)="logout()">Sign out</button>
+      </header>
+      <main class="content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+} @else {
+  <div class="signin">
+    <div class="card card-pad signin-card">
+      <div class="brand big">
+        <span class="logo">M</span>
+        <span>MOYO Vendor Portal</span>
+      </div>
+      <p class="muted">Sign in to manage your products, stock, and allocated orders.</p>
+      <button type="button" class="btn btn-primary" (click)="login()">Sign in with Microsoft</button>
+    </div>
+  </div>
+}
