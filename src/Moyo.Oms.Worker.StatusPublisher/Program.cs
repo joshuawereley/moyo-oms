@@ -1,6 +1,7 @@
 using Moyo.Oms.Application;
 using Moyo.Oms.Application.Abstractions.Identity;
 using Moyo.Oms.Application.Abstractions.Messaging;
+using Moyo.Oms.Application.Orders;
 using Moyo.Oms.Infrastructure;
 using Moyo.Oms.Worker.StatusPublisher;
 
@@ -22,7 +23,7 @@ builder.Services.AddOptions<ServiceBusOptions>()
     .Validate(options => options.PollIntervalSeconds > 0, "ServiceBus PollIntervalSeconds must be positive.")
     .ValidateOnStart();
 
-
+builder.Services.AddScoped<IOutboxPublisher, OutboxPublisher>();
 builder.Services.AddSingleton<IStatusEventPublisher, ServiceBusStatusEventPublisher>();
 builder.Services.AddHostedService<StatusPublisherWorker>();
 
