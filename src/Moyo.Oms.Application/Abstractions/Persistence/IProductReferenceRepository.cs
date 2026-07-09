@@ -12,4 +12,6 @@ public interface IProductReferenceRepository
             int externalSystemId,
             string pmsProductId,
             CancellationToken cancellationToken = default);
+
+    void Add(ProductReference productReference);
 }
