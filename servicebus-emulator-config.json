@@ -27,7 +27,7 @@
               }
             ]
           },
-            {
+          {
             "Name": "orders.status",
             "Properties": {
               "DefaultMessageTimeToLive": "PT1H",
@@ -38,6 +38,28 @@
             "Subscriptions": [
               {
                 "Name": "client-portal",
+                "Properties": {
+                  "DeadLetteringOnMessageExpiration": false,
+                  "DefaultMessageTimeToLive": "PT1H",
+                  "LockDuration": "PT1M",
+                  "MaxDeliveryCount": 5,
+                  "RequiresSession": false
+                },
+                "Rules": []
+              }
+            ]
+          },
+          {
+            "Name": "orders.received",
+            "Properties": {
+              "DefaultMessageTimeToLive": "PT1H",
+              "RequiresDuplicateDetection": true,
+              "DuplicateDetectionHistoryTimeWindow": "PT5M",
+              "EnableBatchedOperations": true
+            },
+            "Subscriptions": [
+              {
+                "Name": "allocation",
                 "Properties": {
                   "DeadLetteringOnMessageExpiration": false,
                   "DefaultMessageTimeToLive": "PT1H",
