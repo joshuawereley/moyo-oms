@@ -41,4 +41,14 @@ public sealed class OrderRepository : IOrderRepository
             .Select(order => (int?)order.Id)
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<CustomerOrder?> GetForAllocationAsync(
+        int orderId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.CustomerOrders
+            .Include(order => order.IncomingOrderEvent)
+            .Include(order => order.LineItems)
+            .FirstOrDefaultAsync(order => order.Id == orderId, cancellationToken);
+    }
 }
