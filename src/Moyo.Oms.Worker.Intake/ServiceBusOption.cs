@@ -11,5 +11,6 @@ public sealed class ServiceBusOptions
     public string ConnectionString { get; set; } = string.Empty;
     public string TopicName { get; set; } = string.Empty;
     public string SubscriptionName { get; set; } = string.Empty;
+    public string OrderReceivedTopicName { get; set; } = string.Empty;
     public int ExternalSystemId { get; set; }
 }

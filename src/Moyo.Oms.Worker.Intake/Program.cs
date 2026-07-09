@@ -19,6 +19,7 @@ builder.Services.AddOptions<ServiceBusOptions>()
     .Validate(options => !string.IsNullOrWhiteSpace(options.TopicName), "ServiceBus topic name is required.")
     .Validate(options => !string.IsNullOrWhiteSpace(options.SubscriptionName), "ServiceBus subscription name is required.")
     .Validate(options => options.ExternalSystemId > 0, "ServiceBus ExternalSystemId must be positive.")
+    .Validate(options => !string.IsNullOrWhiteSpace(options.OrderReceivedTopicName), "ServiceBus OrderReceivedTopicName is required.")
     .ValidateOnStart();
 
 builder.Services.AddHostedService<OrderIntakeProcessor>();
