@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using Moyo.Oms.Api.Authorization;
 using Moyo.Oms.Api.Contracts;
+using Moyo.Oms.Application.Abstractions.Identity;
+using Moyo.Oms.Application.Abstractions.Queries;
+using Moyo.Oms.Application.Common;
 using Moyo.Oms.Application.VendorProducts;
 
 namespace Moyo.Oms.Api.Controllers;
@@ -13,10 +16,31 @@ namespace Moyo.Oms.Api.Controllers;
 public sealed class VendorProductsController : ControllerBase
 {
     private readonly IInventoryService _inventoryService;
+    private readonly IVendorProductQueries _vendorProductQueries;
+    private readonly ICurrentVendorUserProvider _currentVendorUser;
 
-    public VendorProductsController(IInventoryService inventoryService)
+    public VendorProductsController(
+        IInventoryService inventoryService,
+        IVendorProductQueries vendorProductQueries,
+        ICurrentVendorUserProvider currentVendorUser)
     {
         _inventoryService = inventoryService;
+        _vendorProductQueries = vendorProductQueries;
+        _currentVendorUser = currentVendorUser;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<PagedResult<VendorProductListItem>>> GetMyProducts(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        int vendorId = await _currentVendorUser.GetVendorIdAsync(cancellationToken);
+
+        PagedResult<VendorProductListItem> result =
+            await _vendorProductQueries.GetPageByVendorAsync(vendorId, page, pageSize, cancellationToken);
+
+        return Ok(result);
     }
 
     [HttpPut("{vendorProductId:int}/price")]

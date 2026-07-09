@@ -159,5 +159,8 @@ public sealed class VendorProductStockTests
 
         public Task<int> GetVendorUserIdAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult(_vendorUserId);
+
+        public Task<int> GetVendorIdAsync(CancellationToken cancellationToken = default) =>
+            Task.FromResult(_vendorUserId);
     }
 }

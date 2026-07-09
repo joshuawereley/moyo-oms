@@ -22,7 +22,13 @@ public sealed class CurrentVendorUserProvider : ICurrentVendorUserProvider
         _vendorUsers = vendorUsers;
     }
 
-    public async Task<int> GetVendorUserIdAsync(CancellationToken cancellationToken = default)
+    public async Task<int> GetVendorUserIdAsync(CancellationToken cancellationToken = default) =>
+        (await GetCurrentAsync(cancellationToken)).Id;
+
+    public async Task<int> GetVendorIdAsync(CancellationToken cancellationToken = default) =>
+        (await GetCurrentAsync(cancellationToken)).VendorId;
+
+    private async Task<VendorUser> GetCurrentAsync(CancellationToken cancellationToken)
     {
         string? externalUserId = _currentUser.ExternalUserId;
 
@@ -31,10 +37,7 @@ public sealed class CurrentVendorUserProvider : ICurrentVendorUserProvider
             throw new ForbiddenAccessException("The caller is not an authenticated vendor user.");
         }
 
-        VendorUser vendorUser =
-            await _vendorUsers.GetByAzureAdUserIdAsync(externalUserId, cancellationToken)
+        return await _vendorUsers.GetByAzureAdUserIdAsync(externalUserId, cancellationToken)
             ?? throw new ForbiddenAccessException("The caller is not a provisioned vendor user.");
-
-        return vendorUser.Id;
     }
 }
