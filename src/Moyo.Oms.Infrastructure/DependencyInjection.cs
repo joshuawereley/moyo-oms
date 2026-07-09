@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using Moyo.Oms.Application.Abstractions.Persistence;
+using Moyo.Oms.Application.Abstractions.Queries;
 using Moyo.Oms.Infrastructure.Persistence;
+using Moyo.Oms.Infrastructure.Persistence.Queries;
 using Moyo.Oms.Infrastructure.Persistence.Repositories;
 
 namespace Moyo.Oms.Infrastructure;
@@ -35,9 +37,11 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IOrderStatusHistoryRepository, OrderStatusHistoryRepository>();
         services.AddScoped<IOutgoingStatusEventRepository, OutgoingStatusEventRepository>();
-        services.AddScoped<IOutgoingStatusEventRepository, OutgoingStatusEventRepository>();
         services.AddScoped<IOrderAllocationRepository, OrderAllocationRepository>();
         services.AddScoped<IProductReferenceRepository, ProductReferenceRepository>();
+
+        services.AddScoped<IVendorProductQueries, VendorProductQueries>();
+        services.AddScoped<IOrderQueries, OrderQueries>();
 
         return services;
     }
