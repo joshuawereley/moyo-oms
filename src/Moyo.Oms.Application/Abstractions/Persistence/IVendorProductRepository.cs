@@ -12,5 +12,7 @@ public interface IVendorProductRepository
 
     Task<IReadOnlyList<VendorProduct>> GetByVendorAsync(int vendorId, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<VendorProduct>> GetByProductReferenceAsync(int productReferenceId, CancellationToken cancellationToken = default);
+
     void Add(VendorProduct vendorProduct);
 }
