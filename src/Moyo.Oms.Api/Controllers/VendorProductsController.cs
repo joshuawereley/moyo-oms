@@ -36,4 +36,23 @@ public sealed class VendorProductsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPut("{vendorProductId:int}/stock")]
+    [Authorize(Policy = AuthorizationPolicies.VendorAdministrator)]
+    public async Task<IActionResult> AdjustStock(
+        int vendorProductId,
+        AdjustVendorProductStockBody body,
+        CancellationToken cancellationToken)
+    {
+        AdjustVendorProductStockRequest request = new()
+        {
+            VendorProductId = vendorProductId,
+            Direction = body.Direction,
+            Quantity = body.Quantity,
+        };
+
+        await _inventoryService.AdjustStockAsync(request, cancellationToken);
+
+        return NoContent();
+    }
 }
