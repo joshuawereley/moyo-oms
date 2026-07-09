@@ -31,4 +31,7 @@ await ReferenceDataSeeder.SeedAsync(context, options);
 Console.WriteLine("Seeding vendor products...");
 await VendorProductSeeder.SeedAsync(context);
 
-Console.WriteLine("Reference and vendor-product data seeded.");
+Console.WriteLine($"Seeding {options.Orders} orders...");
+await OrderSeeder.SeedAsync(context, options);
+
+Console.WriteLine("Seeding complete.");
