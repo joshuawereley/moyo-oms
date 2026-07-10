@@ -1,0 +1,12 @@
+.git/
+.github/
+docs/
+tests/
+tools/
+web/
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+docker-compose.yml
+servicebus-emulator-config.json

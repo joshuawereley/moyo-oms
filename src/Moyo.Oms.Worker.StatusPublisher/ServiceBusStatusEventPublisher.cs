@@ -15,14 +15,14 @@ namespace Moyo.Oms.Worker.StatusPublisher;
 
 public sealed class ServiceBusStatusEventPublisher : IStatusEventPublisher, IAsyncDisposable
 {
-    private readonly ServiceBusClient _client;
     private readonly ServiceBusSender _sender;
 
-    public ServiceBusStatusEventPublisher(IOptions<ServiceBusOptions> options)
+    public ServiceBusStatusEventPublisher(IOptions<ServiceBusOptions> options, ServiceBusClient client)
     {
-        ServiceBusOptions serviceBusOptions = options.Value;
-        _client = new ServiceBusClient(serviceBusOptions.ConnectionString);
-        _sender = _client.CreateSender(serviceBusOptions.TopicName);
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(client);
+
+        _sender = client.CreateSender(options.Value.TopicName);
     }
 
     public async Task PublishAsync(
@@ -50,7 +50,7 @@ public sealed class ServiceBusStatusEventPublisher : IStatusEventPublisher, IAsy
 
     public async ValueTask DisposeAsync()
     {
+        // The client is a container-owned singleton; disposing it here would be a double dispose.
         await _sender.DisposeAsync();
-        await _client.DisposeAsync();
     }
 }

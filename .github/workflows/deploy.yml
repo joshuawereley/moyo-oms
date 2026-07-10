@@ -1,0 +1,168 @@
+name: Deploy
+
+# Manual by default. Deploying on every push to main would rebuild three images
+# and roll three revisions for commits that never touch the deployed code.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Required for federated (secretless) login to Azure.
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  RESOURCE_GROUP: moyo-oms-rg
+  # Central US is the region this subscription may provision SQL in that also
+  # carries Static Web Apps, Flex Consumption, and Container Registry.
+  LOCATION: centralus
+  NAME_PREFIX: moyo
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Ensure resource group
+        run: az group create --name "$RESOURCE_GROUP" --location "$LOCATION" --output none
+
+      # Registry first: the container apps in main.bicep reference images by tag,
+      # so those images have to exist before that template is deployed.
+      - name: Deploy container registry
+        id: registry
+        run: |
+          acr_name=$(az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --template-file infra/registry.bicep \
+            --parameters namePrefix="$NAME_PREFIX" \
+            --query properties.outputs.acrName.value -o tsv)
+          echo "acr_name=$acr_name" >> "$GITHUB_OUTPUT"
+
+      # Built on the runner rather than with `az acr build`: ACR Tasks is a separately
+      # entitled service and this subscription is not permitted to use it.
+      - name: Build and push images
+        env:
+          ACR: ${{ steps.registry.outputs.acr_name }}
+          TAG: ${{ github.sha }}
+        run: |
+          az acr login --name "$ACR"
+          for target in api:Moyo.Oms.Api \
+                        worker-intake:Moyo.Oms.Worker.Intake \
+                        worker-status:Moyo.Oms.Worker.StatusPublisher; do
+            image="${target%%:*}"
+            project="${target##*:}"
+            tagged="${ACR}.azurecr.io/moyo/${image}:${TAG}"
+            docker build \
+              --platform linux/amd64 \
+              --file "src/${project}/Dockerfile" \
+              --tag "$tagged" \
+              .
+            docker push "$tagged"
+          done
+
+      - name: Deploy infrastructure
+        id: infra
+        env:
+          ACR: ${{ steps.registry.outputs.acr_name }}
+          TAG: ${{ github.sha }}
+        run: |
+          login_server="${ACR}.azurecr.io"
+          outputs=$(az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --template-file infra/main.bicep \
+            --parameters \
+              namePrefix="$NAME_PREFIX" \
+              acrName="$ACR" \
+              sqlAdminObjectId="${{ secrets.AZURE_SQL_ADMIN_OBJECT_ID }}" \
+              sqlAdminLogin="${{ secrets.AZURE_SQL_ADMIN_LOGIN }}" \
+              apiImage="${login_server}/moyo/api:${TAG}" \
+              intakeImage="${login_server}/moyo/worker-intake:${TAG}" \
+              statusPublisherImage="${login_server}/moyo/worker-status:${TAG}" \
+            --query properties.outputs -o json)
+
+          echo "api_url=$(echo "$outputs" | jq -r .apiUrl.value)" >> "$GITHUB_OUTPUT"
+          echo "function_app=$(echo "$outputs" | jq -r .functionAppName.value)" >> "$GITHUB_OUTPUT"
+          echo "static_site=$(echo "$outputs" | jq -r .staticSiteName.value)" >> "$GITHUB_OUTPUT"
+          echo "static_site_url=$(echo "$outputs" | jq -r .staticSiteUrl.value)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish allocation function
+        run: dotnet publish src/Moyo.Oms.AllocationFunction -c Release -o functionapp
+
+      - name: Deploy allocation function
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ steps.infra.outputs.function_app }}
+          package: functionapp
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/moyo-oms-ui/package-lock.json
+
+      - name: Build SPA
+        run: |
+          npm ci
+          npm run build
+        working-directory: web/moyo-oms-ui
+
+      # The API hostname is only known once Container Apps has assigned ingress,
+      # so the SPA reads it from config.json rather than baking it into the bundle.
+      - name: Point SPA at the deployed API
+        env:
+          API_URL: ${{ steps.infra.outputs.api_url }}
+        run: |
+          config=web/moyo-oms-ui/dist/moyo-oms-ui/browser/config.json
+          jq --arg url "$API_URL" '.apiBaseUrl = $url' "$config" > "$config.tmp"
+          mv "$config.tmp" "$config"
+          cat "$config"
+
+      - name: Get Static Web Apps deployment token
+        id: swa
+        run: |
+          token=$(az staticwebapp secrets list \
+            --name "${{ steps.infra.outputs.static_site }}" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query properties.apiKey -o tsv)
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy SPA
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ steps.swa.outputs.token }}
+          action: upload
+          app_location: web/moyo-oms-ui/dist/moyo-oms-ui/browser
+          output_location: ''
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Summary
+        run: |
+          {
+            echo "### MOYO OMS deployed"
+            echo ""
+            echo "| Component | URL |"
+            echo "| --- | --- |"
+            echo "| Vendor portal | ${{ steps.infra.outputs.static_site_url }} |"
+            echo "| API | ${{ steps.infra.outputs.api_url }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
