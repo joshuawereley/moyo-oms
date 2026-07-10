@@ -9,18 +9,22 @@ import {
   MsalInterceptorConfiguration,
 } from '@azure/msal-angular';
 
-const clientId = 'dc0c800a-b583-497e-a69d-7c3e74e7dddf';
-const tenantId = '97e0856d-7492-41b6-8781-b66a8cebf11f';
-const apiScope = `api://${clientId}/access_as_user`;
-const apiBaseUrl = 'http://localhost:5222';
+import { getRuntimeConfig } from '../core/api.config';
+
+function apiScope(clientId: string): string {
+  return `api://${clientId}/access_as_user`;
+}
 
 export function msalInstanceFactory(): IPublicClientApplication {
+  const { clientId, tenantId } = getRuntimeConfig();
+
   return new PublicClientApplication({
     auth: {
       clientId,
       authority: `https://login.microsoftonline.com/${tenantId}`,
-      redirectUri: 'http://localhost:4200',
-      postLogoutRedirectUri: 'http://localhost:4200',
+      // Origin rather than a literal: the same build serves localhost and the deployed site.
+      redirectUri: window.location.origin,
+      postLogoutRedirectUri: window.location.origin,
     },
     cache: {
       cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -32,14 +36,16 @@ export function msalGuardConfigFactory(): MsalGuardConfiguration {
   return {
     interactionType: InteractionType.Redirect,
     authRequest: {
-      scopes: [apiScope],
+      scopes: [apiScope(getRuntimeConfig().clientId)],
     },
   };
 }
 
 export function msalInterceptorConfigFactory(): MsalInterceptorConfiguration {
+  const { apiBaseUrl, clientId } = getRuntimeConfig();
+
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set(`${apiBaseUrl}/api/*`, [apiScope]);
+  protectedResourceMap.set(`${apiBaseUrl}/api/*`, [apiScope(clientId)]);
 
   return {
     interactionType: InteractionType.Redirect,

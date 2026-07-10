@@ -21,21 +21,22 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ServiceBusOptions _options;
     private readonly ILogger<OrderIntakeProcessor> _logger;
-    private readonly ServiceBusClient _client;
     private readonly ServiceBusProcessor _processor;
     private readonly ServiceBusSender _allocationSender;
 
     public OrderIntakeProcessor(
         IServiceScopeFactory scopeFactory,
         IOptions<ServiceBusOptions> options,
-        ILogger<OrderIntakeProcessor> logger)
+        ILogger<OrderIntakeProcessor> logger,
+        ServiceBusClient client)
     {
+        ArgumentNullException.ThrowIfNull(client);
+
         _scopeFactory = scopeFactory;
         _options = options.Value;
         _logger = logger;
 
-        _client = new ServiceBusClient(_options.ConnectionString);
-        _processor = _client.CreateProcessor(
+        _processor = client.CreateProcessor(
             _options.TopicName,
             _options.SubscriptionName,
             new ServiceBusProcessorOptions
@@ -43,7 +44,7 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
                 AutoCompleteMessages = false,
                 MaxConcurrentCalls = 1,
             });
-        _allocationSender = _client.CreateSender(_options.OrderReceivedTopicName);
+        _allocationSender = client.CreateSender(_options.OrderReceivedTopicName);
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -130,8 +131,8 @@ public sealed class OrderIntakeProcessor : IHostedService, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        // The client is a container-owned singleton; disposing it here would be a double dispose.
         await _processor.DisposeAsync();
         await _allocationSender.DisposeAsync();
-        await _client.DisposeAsync();
     }
 }

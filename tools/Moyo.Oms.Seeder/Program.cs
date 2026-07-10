@@ -22,8 +22,15 @@ using var host = builder.Build();
 await using AsyncServiceScope scope = host.Services.CreateAsyncScope();
 OmsDbContext context = scope.ServiceProvider.GetRequiredService<OmsDbContext>();
 
-Console.WriteLine("Resetting database...");
-await ReferenceDataSeeder.ResetAsync(context);
+if (options.Reset)
+{
+    Console.WriteLine("Resetting database...");
+    await ReferenceDataSeeder.ResetAsync(context);
+}
+else
+{
+    Console.WriteLine("Skipping reset; seeding into the existing schema.");
+}
 
 Console.WriteLine($"Seeding {options.Vendors} vendors and {options.Products} products...");
 await ReferenceDataSeeder.SeedAsync(context, options);

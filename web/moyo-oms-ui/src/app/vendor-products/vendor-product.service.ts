@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { API_BASE_URL } from '../core/api.config';
+import { apiBaseUrl } from '../core/api.config';
 import { PagedResult, VendorProductListItem } from '../core/api-models';
 
 export type StockAdjustmentDirection = 'Increase' | 'Decrease';
@@ -10,7 +10,7 @@ export type StockAdjustmentDirection = 'Increase' | 'Decrease';
 @Injectable({ providedIn: 'root' })
 export class VendorProductService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${API_BASE_URL}/api/vendor-products`;
+  private readonly baseUrl = `${apiBaseUrl()}/api/vendor-products`;
 
   getMyProducts(page: number, pageSize: number): Observable<PagedResult<VendorProductListItem>> {
     const params = new HttpParams().set('page', page).set('pageSize', pageSize);

@@ -37,3 +37,19 @@ jobs:
 
       - name: Test
         run: dotnet test Moyo.Oms.sln --configuration Release --no-build --verbosity normal
+
+      # Part of the same job so the existing required "build" check gates the SPA too.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/moyo-oms-ui/package-lock.json
+
+      - name: Restore web dependencies
+        run: npm ci
+        working-directory: web/moyo-oms-ui
+
+      - name: Build web
+        run: npm run build
+        working-directory: web/moyo-oms-ui

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Held at 1.17.2: 1.18.0+ pulls Azure.Core 1.53, whose .NET 10 extension
+         packages conflict with the 8.x pins below; 1.16.0- pins Azure.Core under
+         what Azure.Messaging.ServiceBus 7.20.1 requires. Both directions are NU1109. -->
+    <PackageVersion Include="Azure.Identity" Version="1.17.2" />
     <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="FluentAssertions" Version="6.12.1" />
