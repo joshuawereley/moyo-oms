@@ -405,6 +405,12 @@ resource apiApp 'Microsoft.App/containerApps@2024-03-01' = {
               name: 'ASPNETCORE_ENVIRONMENT'
               value: 'Production'
             }
+            {
+              // Exposes Swagger UI in the deployed environment (paired with the
+              // Swagger:Enabled check in Program.cs). Off by default without this flag.
+              name: 'Swagger__Enabled'
+              value: 'true'
+            }
           ])
         }
       ]
